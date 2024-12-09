@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import br.com.vinculos.dto.AtualizaVinculoResidenciaDto;
+import br.com.vinculos.dto.GETMoradoresSemResidenciaResponseDto;
 import br.com.vinculos.dto.MoradorRequestDto;
 import br.com.vinculos.dto.ResidenciaRequestDto;
 import br.com.vinculos.dto.VinculoResidenciaRequestDto;
@@ -119,17 +120,23 @@ public class ValidarVinculoResidencia implements Validators<VinculoResidenciaReq
 	}
 
 	@Override
-	public List<VinculoResidencia> validarGet(VinculoResidenciaRequestDto dto) throws RegistroException {
+	public List<VinculoResidencia> validarGet(VinculoResidenciaRequestDto dto) throws RegistroException, IllegalArgumentException, IllegalAccessException, ClassNotFoundException {
 		
 		RegistroException errors = new RegistroException();
 		
 		if(dto.getMoradorId() == null)
 			errors.getErros().add(new ErroRegistro("", TITULO, " Campo moradorId é obrigatório!")); 
 		
-		List<VinculoResidencia> vinculos = vinculoRepository.findVinculoBy(dto);
+		MoradorRequestDto requestMorador = MoradorRequestDto.builder()
+				.id(dto.getMoradorId())
+				.build();
 		
-		if (vinculos.size() == 0)
-			errors.getErros().add(new ErroRegistro("", TITULO, " Não foi encontrado vinculo de residencias para o morador!"));
+		GETMoradoresSemResidenciaResponseDto moradorResponse = moradorSender.buscarMoradores(requestMorador);
+		
+		if (moradorResponse.getMoradores().size() == 0)
+			errors.getErros().add(new ErroRegistro("", TITULO, " Morador não encontrado!"));
+		
+		List<VinculoResidencia> vinculos = vinculoRepository.findVinculoBy(dto);
 		
 		if(!errors.getErros().isEmpty())
 			throw errors;

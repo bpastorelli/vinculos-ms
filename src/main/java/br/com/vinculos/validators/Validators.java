@@ -14,5 +14,5 @@ public interface Validators<T, X, V> {
 	
 	void validarPut(List<X> listDto) throws RegistroException;
 	
-	V validarGet(T dto) throws RegistroException;
+	V validarGet(T dto) throws RegistroException, IllegalArgumentException, IllegalAccessException, ClassNotFoundException;
 }

@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class GETMoradorSemResidenciasResponseDto implements Serializable {
+public class GETMoradorResponseDto implements Serializable {
 
 	private static final long serialVersionUID = -5754246207015712518L;
 	

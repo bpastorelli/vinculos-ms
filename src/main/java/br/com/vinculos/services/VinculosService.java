@@ -19,6 +19,7 @@ import br.com.vinculos.dto.ResidenciaRequestDto;
 import br.com.vinculos.dto.ResponsePublisherDto;
 import br.com.vinculos.dto.VinculoResidenciaRequestDto;
 import br.com.vinculos.entities.VinculoResidencia;
+import br.com.vinculos.errorheadling.ErroRegistro;
 import br.com.vinculos.errorheadling.RegistroException;
 import br.com.vinculos.repositories.VinculoResidenciaRepository;
 import br.com.vinculos.response.Response;
@@ -84,20 +85,31 @@ public class VinculosService {
 		
 		GETMoradoresSemResidenciaResponseDto moradorResponse = moradorSender.buscarMoradores(requestMorador);
 		
-		List<String> ids = new ArrayList<>();
-		ids = vinculos.stream().map(v -> v.getResidencia().getId().toString()).toList();
+		GETVinculoMoradorResidenciaResponseDto vinculo = null;
 		
-		ResidenciaRequestDto requestResidencia = ResidenciaRequestDto.builder()
-				.ids(ids)
+		if (moradorResponse.getMoradores().size() > 0) {
+			vinculo = GETVinculoMoradorResidenciaResponseDto.builder()
+				.morador(moradorResponse.getMoradores().get(0))
 				.build();
+		}
 		
-		QueryResidenciaResponseDto residenciaResponse = residenciaSender.buscarResidencias(requestResidencia);
-		
-		GETVinculoMoradorResidenciaResponseDto vinculo = GETVinculoMoradorResidenciaResponseDto.builder()
-				.morador(moradorResponse.moradores.get(0))
-				.build();
-		
-		moradorResponse.getMoradores().get(0).setResidencias(residenciaResponse.getResidencias());
+		if(vinculos.size() > 0) {
+			List<String> ids = new ArrayList<>();
+			ids = vinculos.stream().map(v -> v.getResidencia().getId().toString()).toList();
+			ResidenciaRequestDto requestResidencia = ResidenciaRequestDto.builder()
+					.ids(ids)
+					.build();
+			
+			QueryResidenciaResponseDto residenciaResponse = residenciaSender.buscarResidencias(requestResidencia);
+			
+			vinculo = GETVinculoMoradorResidenciaResponseDto.builder()
+					.morador(moradorResponse.moradores.get(0))
+					.build();
+			
+			moradorResponse.getMoradores().get(0).setResidencias(residenciaResponse.getResidencias().size() > 0 ? residenciaResponse.getResidencias() : new ArrayList<>());
+		}else {
+			moradorResponse.getMoradores().get(0).setResidencias(new ArrayList<>());
+		}
 		
 		Response<GETVinculoMoradorResidenciaResponseDto> response = new Response<GETVinculoMoradorResidenciaResponseDto>(); 
 		

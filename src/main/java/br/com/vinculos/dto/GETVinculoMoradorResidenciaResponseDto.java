@@ -9,6 +9,6 @@ import lombok.Setter;
 @Builder
 public class GETVinculoMoradorResidenciaResponseDto {
 
-	private GETMoradorSemResidenciasResponseDto morador;
+	private GETMoradorResponseDto morador;
 	
 }
