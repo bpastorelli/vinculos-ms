@@ -19,7 +19,6 @@ import br.com.vinculos.dto.ResidenciaRequestDto;
 import br.com.vinculos.dto.ResponsePublisherDto;
 import br.com.vinculos.dto.VinculoResidenciaRequestDto;
 import br.com.vinculos.entities.VinculoResidencia;
-import br.com.vinculos.errorheadling.ErroRegistro;
 import br.com.vinculos.errorheadling.RegistroException;
 import br.com.vinculos.repositories.VinculoResidenciaRepository;
 import br.com.vinculos.response.Response;

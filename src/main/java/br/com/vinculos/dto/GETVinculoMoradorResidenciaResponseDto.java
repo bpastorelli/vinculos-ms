@@ -1,5 +1,7 @@
 package br.com.vinculos.dto;
 
+import java.io.Serializable;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -7,8 +9,10 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class GETVinculoMoradorResidenciaResponseDto {
+public class GETVinculoMoradorResidenciaResponseDto implements Serializable {
 
-	private GETMoradorResponseDto morador;
+	private static final long serialVersionUID = 1L;
+	
+	public GETMoradorResponseDto morador;
 	
 }
