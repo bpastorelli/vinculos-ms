@@ -1,25 +1,26 @@
 package br.com.vinculos.dto;
 
+import java.io.Serializable;
+
 import javax.persistence.Transient;
 
-import br.com.vinculos.entities.Morador;
-import br.com.vinculos.entities.Residencia;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
+
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Builder
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class VinculoResidenciaDto {
-	
-	private Morador morador;
-	
-	private Residencia residencia;
+public class ProcessoCadastroDto implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+
+	@JsonUnwrapped
+	private MoradorDto morador;
 	
 	@Transient
 	private String guide;

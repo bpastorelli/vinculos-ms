@@ -22,7 +22,7 @@ visitante:
   topic:
     name: visitante-mq
     
-vinculos:
+vinculo:
   topic:
     name: vinculo-mq
     

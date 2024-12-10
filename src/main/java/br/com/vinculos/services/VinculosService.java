@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import br.com.vinculos.amqp.producer.impl.VinculosProducer;
 import br.com.vinculos.dto.AtualizaVinculoResidenciaDto;
 import br.com.vinculos.dto.CabecalhoResponsePublisherDto;
 import br.com.vinculos.dto.GETMoradoresSemResidenciaResponseDto;
@@ -35,9 +34,6 @@ public class VinculosService {
 	private int guideLimit;
 	
 	@Autowired
-	private VinculosProducer producer;
-	
-	@Autowired
 	private MoradorSender moradorSender;
 	
 	@Autowired
@@ -60,7 +56,7 @@ public class VinculosService {
 		//Envia para a fila de Vinculo de Residencia
 		log.info("Enviando mensagem " +  vinculoRequestBody.toString() + " para o consumer.");
 		
-		this.producer.producerAsync(vinculoRequestBody);
+		//this.producer.producerAsync(vinculoRequestBody);
 		
 		ResponsePublisherDto response = ResponsePublisherDto
 				.builder()

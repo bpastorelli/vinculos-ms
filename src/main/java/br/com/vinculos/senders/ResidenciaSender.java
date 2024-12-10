@@ -27,7 +27,23 @@ public class ResidenciaSender {
 		log.info("Consultando residencias no endpoint: {}", URL);
 		
 		RestTemplateUtil rest = RestTemplateUtil.builder()
-				.URL(URL)
+				.URL(URL + "?%s")
+				.mediaType(MediaType.APPLICATION_JSON)
+				.method(HttpMethod.GET)
+				.restTemplate(restTemplate)
+				.params(request)
+				.build();
+		
+		return (QueryResidenciaResponseDto) rest.execute(QueryResidenciaResponseDto.class);
+		
+	}
+	
+	public QueryResidenciaResponseDto buscarResidenciasPorFiltro(ResidenciaRequestDto request) throws IllegalArgumentException, IllegalAccessException, ClassNotFoundException{
+		
+		log.info("Consultando residencias no endpoint: {}", URL);
+		
+		RestTemplateUtil rest = RestTemplateUtil.builder()
+				.URL(URL + "/filtro?%s")
 				.mediaType(MediaType.APPLICATION_JSON)
 				.method(HttpMethod.GET)
 				.restTemplate(restTemplate)

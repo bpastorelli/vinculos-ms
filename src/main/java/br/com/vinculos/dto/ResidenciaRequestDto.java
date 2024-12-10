@@ -15,11 +15,16 @@ import lombok.Setter;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ResidenciaRequestDto implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	
 	public List<String> ids;
+	
+	public String cep;
+	
+	public Long numero;
+	
+	public String complemento;
+	
+	public String guide;
 	
 }
