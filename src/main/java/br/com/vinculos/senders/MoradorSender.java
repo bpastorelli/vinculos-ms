@@ -27,7 +27,7 @@ public class MoradorSender {
 		log.info("Consultando moradores no endpoint: {}", URL);
 		
 		RestTemplateUtil rest = RestTemplateUtil.builder()
-				.URL(URL + "?%s")
+				.URL(URL + "/query?%s")
 				.mediaType(MediaType.APPLICATION_JSON)
 				.method(HttpMethod.GET)
 				.restTemplate(restTemplate)

@@ -57,10 +57,12 @@ class VinculoResidenciaController extends RegistroExceptionHandler {
 		log.info("Buscando vinculos de residencia x morador");
 		
 		Response<?> response = null;
-		if(vinculoRequestBody.getMoradorId() != null)
+		if (vinculoRequestBody.getMoradorId() != null && vinculoRequestBody.getResidenciaId() == null)
 			response = vinculosService.buscarPorMorador(vinculoRequestBody);
-		else
+		else if (vinculoRequestBody.getMoradorId() == null && vinculoRequestBody.getResidenciaId() != null)
 			response = vinculosService.buscarPorResidencia(vinculoRequestBody);
+		else
+			response = vinculosService.buscarPorMorador(vinculoRequestBody);
 		
 		return new ResponseEntity<>(response.getData(), HttpStatus.OK);
 		
