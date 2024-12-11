@@ -1,6 +1,7 @@
 package br.com.vinculos.dto;
 
 import java.io.Serializable;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,6 +22,8 @@ public class MoradorRequestDto implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	public Long id;
+	
+	public List<String> ids;
 	
 	public String nome;
 	

@@ -56,7 +56,11 @@ class VinculoResidenciaController extends RegistroExceptionHandler {
 		
 		log.info("Buscando vinculos de residencia x morador");
 		
-		Response<GETVinculoMoradorResidenciaResponseDto> response = vinculosService.buscar(vinculoRequestBody);
+		Response<?> response = null;
+		if(vinculoRequestBody.getMoradorId() != null)
+			response = vinculosService.buscarPorMorador(vinculoRequestBody);
+		else
+			response = vinculosService.buscarPorResidencia(vinculoRequestBody);
 		
 		return new ResponseEntity<>(response.getData(), HttpStatus.OK);
 		
@@ -68,7 +72,7 @@ class VinculoResidenciaController extends RegistroExceptionHandler {
 		
 		log.info("Removendo vinculo de residencia x morador");
 		
-		Response<GETVinculoMoradorResidenciaResponseDto> response = vinculosService.buscar(vinculoRequestBody);
+		Response<GETVinculoMoradorResidenciaResponseDto> response = vinculosService.buscarPorMorador(vinculoRequestBody);
 		
 		return new ResponseEntity<>(response.getData(), HttpStatus.OK);
 		

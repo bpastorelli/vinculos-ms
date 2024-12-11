@@ -83,7 +83,7 @@ public class VinculoResidenciaConsumerServiceImpl implements ConsumerService<Pro
 					.cpf(processoDto.getMorador().getCpf())
 					.build();
 			
-			moradorResponse = moradorSender.buscarMoradores(requestMorador);
+			moradorResponse = moradorSender.buscarPorFiltros(requestMorador);
 			
 			ResidenciaRequestDto requestResidencia = ResidenciaRequestDto.builder()
 					.cep(processoDto.getMorador().getResidencia().getCep())

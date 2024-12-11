@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import br.com.vinculos.dto.AtualizaVinculoResidenciaDto;
 import br.com.vinculos.dto.GETMoradoresSemResidenciaResponseDto;
 import br.com.vinculos.dto.MoradorRequestDto;
+import br.com.vinculos.dto.QueryResidenciaResponseDto;
 import br.com.vinculos.dto.ResidenciaRequestDto;
 import br.com.vinculos.dto.VinculoResidenciaRequestDto;
 import br.com.vinculos.entities.VinculoResidencia;
@@ -64,7 +65,7 @@ public class ValidarVinculoResidencia implements Validators<VinculoResidenciaReq
 						.build();
 				
 				try {
-					if(moradorSender.buscarMoradores(request).getMoradores().size() == 0)
+					if(moradorSender.buscarPorFiltros(request).getMoradores().size() == 0)
 						errors.getErros().add(new ErroRegistro("", TITULO, " O morador selecionado não existe!"));
 				} catch (IllegalArgumentException e) {
 					e.printStackTrace();
@@ -124,17 +125,32 @@ public class ValidarVinculoResidencia implements Validators<VinculoResidenciaReq
 		
 		RegistroException errors = new RegistroException();
 		
-		if(dto.getMoradorId() == null)
-			errors.getErros().add(new ErroRegistro("", TITULO, " Campo moradorId é obrigatório!")); 
+		if(dto.getMoradorId() == null && dto.getResidenciaId() == null)
+			errors.getErros().add(new ErroRegistro("", TITULO, " Campo moradorId ou residenciaId é obrigatório!")); 
 		
-		MoradorRequestDto requestMorador = MoradorRequestDto.builder()
-				.id(dto.getMoradorId())
-				.build();
+		MoradorRequestDto requestMorador = null;
+		if (dto.getMoradorId() != null) {			
+			requestMorador = MoradorRequestDto.builder()
+					.id(dto.getMoradorId())
+					.build();
+			GETMoradoresSemResidenciaResponseDto moradorResponse = moradorSender.buscarPorFiltros(requestMorador);
+			
+			if (moradorResponse.getMoradores().size() == 0)
+				errors.getErros().add(new ErroRegistro("", TITULO, " Morador não encontrado!"));
+		}
 		
-		GETMoradoresSemResidenciaResponseDto moradorResponse = moradorSender.buscarMoradores(requestMorador);
-		
-		if (moradorResponse.getMoradores().size() == 0)
-			errors.getErros().add(new ErroRegistro("", TITULO, " Morador não encontrado!"));
+		if (dto.getResidenciaId() != null) {
+			List<String> ids = new ArrayList<>();
+			ids.add(dto.getResidenciaId().toString());
+			ResidenciaRequestDto requestResidencia = ResidenciaRequestDto.builder()
+					.ids(ids)
+					.build();
+			
+			QueryResidenciaResponseDto residenciaResponse = residenciaSender.buscarResidencias(requestResidencia);
+			
+			if (residenciaResponse.getResidencias().size() == 0)
+				errors.getErros().add(new ErroRegistro("", TITULO, " Residencia não encontrada!"));
+		}
 		
 		List<VinculoResidencia> vinculos = vinculoRepository.findVinculoBy(dto);
 		

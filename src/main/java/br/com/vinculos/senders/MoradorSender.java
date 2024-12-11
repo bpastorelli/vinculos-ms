@@ -22,12 +22,28 @@ public class MoradorSender {
 	@Autowired
 	private RestTemplate restTemplate;
 	
-	public GETMoradoresSemResidenciaResponseDto buscarMoradores(MoradorRequestDto request) throws IllegalArgumentException, IllegalAccessException, ClassNotFoundException{
+	public GETMoradoresSemResidenciaResponseDto buscarPorFiltros(MoradorRequestDto request) throws IllegalArgumentException, IllegalAccessException, ClassNotFoundException{
 		
 		log.info("Consultando moradores no endpoint: {}", URL);
 		
 		RestTemplateUtil rest = RestTemplateUtil.builder()
-				.URL(URL)
+				.URL(URL + "?%s")
+				.mediaType(MediaType.APPLICATION_JSON)
+				.method(HttpMethod.GET)
+				.restTemplate(restTemplate)
+				.params(request)
+				.build();
+		
+		return (GETMoradoresSemResidenciaResponseDto) rest.execute(GETMoradoresSemResidenciaResponseDto.class);
+		
+	}
+	
+	public GETMoradoresSemResidenciaResponseDto buscarPorIds(MoradorRequestDto request) throws IllegalArgumentException, IllegalAccessException, ClassNotFoundException{
+		
+		log.info("Consultando moradores no endpoint: {}", URL);
+		
+		RestTemplateUtil rest = RestTemplateUtil.builder()
+				.URL(URL + "/buscar?%s")
 				.mediaType(MediaType.APPLICATION_JSON)
 				.method(HttpMethod.GET)
 				.restTemplate(restTemplate)

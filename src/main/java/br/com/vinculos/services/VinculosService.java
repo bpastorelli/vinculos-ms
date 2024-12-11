@@ -3,6 +3,7 @@ package br.com.vinculos.services;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,6 +13,7 @@ import br.com.vinculos.dto.AtualizaVinculoResidenciaDto;
 import br.com.vinculos.dto.CabecalhoResponsePublisherDto;
 import br.com.vinculos.dto.GETMoradoresSemResidenciaResponseDto;
 import br.com.vinculos.dto.GETVinculoMoradorResidenciaResponseDto;
+import br.com.vinculos.dto.GETVinculoResidenciaMoradorResponseDto;
 import br.com.vinculos.dto.MoradorRequestDto;
 import br.com.vinculos.dto.QueryResidenciaResponseDto;
 import br.com.vinculos.dto.ResidenciaRequestDto;
@@ -70,7 +72,7 @@ public class VinculosService {
 		
 	}
 	
-	public Response<GETVinculoMoradorResidenciaResponseDto> buscar(VinculoResidenciaRequestDto request) throws IllegalArgumentException, IllegalAccessException, ClassNotFoundException, RegistroException {
+	public Response<GETVinculoMoradorResidenciaResponseDto> buscarPorMorador(VinculoResidenciaRequestDto request) throws IllegalArgumentException, IllegalAccessException, ClassNotFoundException, RegistroException {
 		
 		List<VinculoResidencia> vinculos = this.validator.validarGet(request);
 		
@@ -78,7 +80,7 @@ public class VinculosService {
 				.id(request.getMoradorId())
 				.build();
 		
-		GETMoradoresSemResidenciaResponseDto moradorResponse = moradorSender.buscarMoradores(requestMorador);
+		GETMoradoresSemResidenciaResponseDto moradorResponse = moradorSender.buscarPorFiltros(requestMorador);
 		
 		GETVinculoMoradorResidenciaResponseDto vinculo = null;
 		
@@ -107,6 +109,48 @@ public class VinculosService {
 		}
 		
 		Response<GETVinculoMoradorResidenciaResponseDto> response = new Response<GETVinculoMoradorResidenciaResponseDto>(); 
+		
+		response.setData(vinculo);
+		
+		return response;
+		
+	}
+	
+	public Response<GETVinculoResidenciaMoradorResponseDto> buscarPorResidencia(VinculoResidenciaRequestDto request) throws IllegalArgumentException, IllegalAccessException, ClassNotFoundException, RegistroException {
+		
+		List<VinculoResidencia> vinculos = this.validator.validarGet(request);
+		
+		List<String> ids = new ArrayList<>();
+		ids.add(request.getResidenciaId().toString());
+		ResidenciaRequestDto requestResidencia = ResidenciaRequestDto.builder()
+				.ids(ids)
+				.build();
+		
+		QueryResidenciaResponseDto residenciaResponse = residenciaSender.buscarResidencias(requestResidencia);
+		
+		GETVinculoResidenciaMoradorResponseDto vinculo = null;
+		
+		if (residenciaResponse.getResidencias().size() > 0) {
+			vinculo = GETVinculoResidenciaMoradorResponseDto.builder()
+				.residencia(residenciaResponse.residencias.get(0))
+				.build();
+		}
+		
+		if(vinculos.size() > 0) {
+			ids = new ArrayList<>();
+			ids = vinculos.stream().map(m -> m.getMorador().getId().toString()).collect(Collectors.toList());
+			MoradorRequestDto requestMorador = MoradorRequestDto.builder()
+					.ids(ids)
+					.build();
+			
+			GETMoradoresSemResidenciaResponseDto moradorResponse = moradorSender.buscarPorIds(requestMorador);
+			
+			residenciaResponse.getResidencias().get(0).setMoradores(residenciaResponse.getResidencias().size() > 0 ? moradorResponse.getMoradores() : new ArrayList<>());
+		}else {
+			residenciaResponse.getResidencias().get(0).setMoradores(new ArrayList<>());
+		}
+		
+		Response<GETVinculoResidenciaMoradorResponseDto> response = new Response<GETVinculoResidenciaMoradorResponseDto>(); 
 		
 		response.setData(vinculo);
 		

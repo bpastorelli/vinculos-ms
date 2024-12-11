@@ -3,6 +3,8 @@ package br.com.vinculos.dto;
 import java.io.Serializable;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
+
 import br.com.vinculos.enums.PerfilEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -39,6 +41,7 @@ public class GETMoradorResponseDto implements Serializable {
 	
 	private String guide;
 	
+	@JsonUnwrapped
 	private List<GETResidenciaResponseDto> residencias;
 
 }
