@@ -9,8 +9,8 @@ import org.springframework.transaction.annotation.Transactional;
 import br.com.vinculos.consumer.service.ConsumerService;
 import br.com.vinculos.dto.GETMoradoresSemResidenciaResponseDto;
 import br.com.vinculos.dto.MoradorRequestDto;
+import br.com.vinculos.dto.ProcessoCadastroDto;
 import br.com.vinculos.dto.QueryResidenciaResponseDto;
-import br.com.vinculos.dto.ResidenciaDto;
 import br.com.vinculos.dto.ResidenciaRequestDto;
 import br.com.vinculos.entities.Morador;
 import br.com.vinculos.entities.Residencia;
@@ -22,7 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
-public class VinculoResidenciaConsumerServiceImpl implements ConsumerService<ResidenciaDto> {
+public class VinculoResidenciaProcessoConsumerServiceImpl implements ConsumerService<ProcessoCadastroDto> {
 	
 	@Autowired
 	private MoradorSender moradorSender;
@@ -35,9 +35,9 @@ public class VinculoResidenciaConsumerServiceImpl implements ConsumerService<Res
 	
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public void processar(ResidenciaDto processoDto) throws Exception {
+	public void processar(ProcessoCadastroDto processoDto) throws Exception {
 
-		log.info("Registrando vinculo do morador com a residencia");
+		log.info("Registrando vinculo do morador {}, com a residencia {}", processoDto.getMorador().getNome(), processoDto.getMorador().getResidencia().getEndereco() + ", " + processoDto.getMorador().getResidencia().getNumero());
 		
 		Boolean retorno = this.processarComRetry(processoDto);
 	
@@ -63,7 +63,7 @@ public class VinculoResidenciaConsumerServiceImpl implements ConsumerService<Res
 		
 	}
 	
-	private Boolean processarComRetry(ResidenciaDto processoDto) throws IllegalArgumentException, IllegalAccessException, ClassNotFoundException, InterruptedException {
+	private Boolean processarComRetry(ProcessoCadastroDto processoDto) throws IllegalArgumentException, IllegalAccessException, ClassNotFoundException, InterruptedException {
 		
 		int count = 0;
 		int times = 20;
@@ -77,18 +77,18 @@ public class VinculoResidenciaConsumerServiceImpl implements ConsumerService<Res
 			Thread.sleep(1000);
 			
 			count ++;
-			log.info("Tentativa {} para registrar vinculo de residencia.");
+			log.info("Tentativa {} para registrar vinculo de residencia para o morador {} com a residencia {}.", count, processoDto.getMorador().getNome(), processoDto.getMorador().getResidencia().getEndereco());
 			
 			MoradorRequestDto requestMorador = MoradorRequestDto.builder()
-					.guide(processoDto.getTicketMorador())
+					.cpf(processoDto.getMorador().getCpf())
 					.build();
 			
 			moradorResponse = moradorSender.buscarPorFiltros(requestMorador);
 			
 			ResidenciaRequestDto requestResidencia = ResidenciaRequestDto.builder()
-					.cep(processoDto.getCep())
-					.numero(processoDto.getNumero())
-					.complemento(processoDto.getComplemento())
+					.cep(processoDto.getMorador().getResidencia().getCep())
+					.numero(processoDto.getMorador().getResidencia().getNumero())
+					.complemento(processoDto.getMorador().getResidencia().getComplemento())
 					.build();
 			
 			residenciaResponse = residenciaSender.buscarResidenciasPorFiltro(requestResidencia);
