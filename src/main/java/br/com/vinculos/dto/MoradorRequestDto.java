@@ -16,9 +16,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class MoradorRequestDto implements Serializable {
 	
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 
 	public Long id;

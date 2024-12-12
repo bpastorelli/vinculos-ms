@@ -77,7 +77,7 @@ public class VinculoResidenciaConsumerServiceImpl implements ConsumerService<Res
 			Thread.sleep(1000);
 			
 			count ++;
-			log.info("Tentativa {} para registrar vinculo de residencia.");
+			log.info("Tentativa {} para registrar vinculo de residencia.", count);
 			
 			MoradorRequestDto requestMorador = MoradorRequestDto.builder()
 					.guide(processoDto.getTicketMorador())
