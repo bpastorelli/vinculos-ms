@@ -158,6 +158,23 @@ public class VinculosService {
 		
 	}
 	
+	public Response<Boolean> existeRelacao(VinculoResidenciaRequestDto request) throws IllegalArgumentException, IllegalAccessException, ClassNotFoundException, RegistroException {
+		
+		List<VinculoResidencia> vinculos = this.validator.validarGet(request);
+		
+		Response<Boolean> response = new Response<Boolean>();
+		
+		if	(vinculos.size() > 0 && (request.getResidenciaId() != null && request.getMoradorId() != null))
+			response.setData(Boolean.TRUE);
+		else if (request.getResidenciaId() == null || request.getMoradorId() == null)
+			response.setData(Boolean.FALSE);
+		else 
+			response.setData(Boolean.FALSE);
+			
+		return response;
+		
+	}
+	
 	public void deletarVinculo(VinculoResidenciaRequestDto request) {
 		
 		List<VinculoResidencia> vinculo = vinculoResidenciaRepository.findByResidenciaIdAndMoradorId(request.getResidenciaId(), request.getMoradorId());

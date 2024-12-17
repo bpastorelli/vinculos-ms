@@ -2,7 +2,7 @@ vinculo:
   topic:
     name: vinculo-mq
     
-processo:
+vinculo2:
     topic:
       name: vinculo-processo-mq
   

@@ -68,6 +68,18 @@ class VinculoResidenciaController extends RegistroExceptionHandler {
 		
 	}
 	
+	@ApiOperation(value = "Consulta um vinculo de residencia com morador informados.")
+	@GetMapping(value = "/morador-residencia")
+	public ResponseEntity<?> consultar(VinculoResidenciaRequestDto vinculoRequestBody) throws RegistroException, IllegalArgumentException, IllegalAccessException, ClassNotFoundException{
+		
+		log.info("Verifica se existe relação da residência com o morador");
+		
+		Response<Boolean> response = vinculosService.existeRelacao(vinculoRequestBody);
+		
+		return new ResponseEntity<>(response.getData(), HttpStatus.OK);
+		
+	}
+	
 	@ApiOperation(value = "Remove um vinculo de residencia com morador.")
 	@DeleteMapping(value = "/morador-residencia/deletar")
 	public ResponseEntity<?> removeVinculo(VinculoResidenciaRequestDto vinculoRequestBody) throws RegistroException, IllegalArgumentException, IllegalAccessException, ClassNotFoundException{

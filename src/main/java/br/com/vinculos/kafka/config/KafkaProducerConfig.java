@@ -15,7 +15,7 @@ public class KafkaProducerConfig {
 	@Value(value = "${vinculo.topic.name}")
 	private String topicVinculo;
 	
-	@Value(value = "${processo.topic.name}")
+	@Value(value = "${vincilo2.topic.name}")
 	private String topicVinculoProcesso;
 
 	
