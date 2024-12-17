@@ -10,10 +10,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import br.com.vinculos.consumer.service.ConsumerService;
 import br.com.vinculos.dto.GETMoradoresSemResidenciaResponseDto;
-import br.com.vinculos.dto.MoradorDto;
 import br.com.vinculos.dto.MoradorRequestDto;
 import br.com.vinculos.dto.QueryResidenciaResponseDto;
 import br.com.vinculos.dto.ResidenciaRequestDto;
+import br.com.vinculos.dto.VinculoRequestDto;
 import br.com.vinculos.entities.Morador;
 import br.com.vinculos.entities.Residencia;
 import br.com.vinculos.entities.VinculoResidencia;
@@ -24,7 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
-public class VinculoMoradorConsumerServiceImpl implements ConsumerService<MoradorDto> {
+public class VinculoMoradorConsumerServiceImpl implements ConsumerService<VinculoRequestDto> {
 	
 	@Autowired
 	private MoradorSender moradorSender;
@@ -37,7 +37,7 @@ public class VinculoMoradorConsumerServiceImpl implements ConsumerService<Morado
 	
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public void processar(MoradorDto processoDto) throws Exception {
+	public void processar(VinculoRequestDto processoDto) throws Exception {
 
 		log.info("Registrando vinculo do morador com a residencia");
 		
@@ -65,7 +65,7 @@ public class VinculoMoradorConsumerServiceImpl implements ConsumerService<Morado
 		
 	}
 	
-	private Boolean processarComRetry(MoradorDto processoDto) throws IllegalArgumentException, IllegalAccessException, ClassNotFoundException, InterruptedException {
+	private Boolean processarComRetry(VinculoRequestDto processoDto) throws IllegalArgumentException, IllegalAccessException, ClassNotFoundException, InterruptedException {
 		
 		int count = 0;
 		int times = 20;
@@ -82,17 +82,25 @@ public class VinculoMoradorConsumerServiceImpl implements ConsumerService<Morado
 			log.info("Tentativa {} para registrar vinculo de residencia.", count);
 			
 			MoradorRequestDto requestMorador = MoradorRequestDto.builder()
-					.cpf(processoDto.getCpf())
+					.cpf(processoDto.getCpfMorador().replace(".", "").replace("-", ""))
 					.build();
 			
 			moradorResponse = moradorSender.buscarPorFiltros(requestMorador);
 			
-			List<String> ids = new ArrayList<>();
-			ids.add(processoDto.getResidenciaId().toString());
-			
-			ResidenciaRequestDto requestResidencia = ResidenciaRequestDto.builder()
-					.ids(ids)
-					.build();
+			ResidenciaRequestDto requestResidencia = null;
+			if (processoDto.getResidenciaId() != null || processoDto.getResidenciaId() != 0) {
+				List<String> ids = new ArrayList<>();
+				ids.add(processoDto.getResidenciaId().toString());
+				requestResidencia = ResidenciaRequestDto.builder()
+						.ids(ids)
+						.build();
+			}else {
+				requestResidencia = ResidenciaRequestDto.builder()
+						.cep(processoDto.getCepResidencia())
+						.numero(processoDto.getNumeroResidencia())
+						.complemento(processoDto.getComplementoResidencia())
+						.build();
+			}
 			
 			residenciaResponse = residenciaSender.buscarResidenciasPorFiltro(requestResidencia);
 			

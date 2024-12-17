@@ -14,21 +14,12 @@ public class KafkaProducerConfig {
 	
 	@Value(value = "${vinculo.topic.name}")
 	private String topicVinculo;
-	
-	@Value(value = "${vinculo2.topic.name}")
-	private String topicVinculoProcesso;
 
 	
 	@Bean
 	public NewTopic createVinculoTopic() {
 		
 		return new NewTopic(topicVinculo, 1,(short) 1);
-	}
-	
-	@Bean
-	public NewTopic createVinculoProcessoTopic() {
-		
-		return new NewTopic(topicVinculoProcesso, 1,(short) 1);
 	}
 	
 }

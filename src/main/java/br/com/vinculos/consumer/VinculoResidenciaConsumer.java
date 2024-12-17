@@ -7,8 +7,7 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
 import br.com.vinculos.consumer.service.ConsumerService;
-import br.com.vinculos.dto.ProcessoCadastroDto;
-import br.com.vinculos.dto.ResidenciaDto;
+import br.com.vinculos.dto.VinculoRequestDto;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -16,26 +15,10 @@ import lombok.extern.slf4j.Slf4j;
 public class VinculoResidenciaConsumer {
 	
 	@Autowired
-	private ConsumerService<ResidenciaDto> consumerService;
-	
-	@Autowired
-	private ConsumerService<ProcessoCadastroDto> consumerServiceProcesso;
-	
-	@KafkaListener(topics = "${vinculo2.topic.name}", groupId = "${spring.kafka.consumer.group-id}")
-	public void consumer(@Payload ProcessoCadastroDto message) {
-		
-		log.info("Recebida a mensagem, enviando para o serviço...");
-		
-		try {
-			this.consumerServiceProcesso.processar(message);
-		} catch (Exception ex) {
-			throw new AmqpRejectAndDontRequeueException(ex);
-		};
-		
-	}
+	private ConsumerService<VinculoRequestDto> consumerService;
 	
 	@KafkaListener(topics = "${vinculo.topic.name}", groupId = "${spring.kafka.consumer.group-id}")
-	public void consumer(@Payload ResidenciaDto message) {
+	public void consumer(@Payload VinculoRequestDto message) {
 		
 		log.info("Recebida a mensagem, enviando para o serviço...");
 		
@@ -46,5 +29,4 @@ public class VinculoResidenciaConsumer {
 		};
 		
 	}
-
 }
