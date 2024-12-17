@@ -15,6 +15,8 @@ public class VinculoRequestDto {
 	
 	private String cpfMorador;
 	
+	private String ticketMorador;
+	
 	private String cepResidencia;
 	
 	private Long numeroResidencia;

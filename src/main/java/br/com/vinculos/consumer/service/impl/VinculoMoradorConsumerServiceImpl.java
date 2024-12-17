@@ -81,9 +81,16 @@ public class VinculoMoradorConsumerServiceImpl implements ConsumerService<Vincul
 			count ++;
 			log.info("Tentativa {} para registrar vinculo de residencia.", count);
 			
-			MoradorRequestDto requestMorador = MoradorRequestDto.builder()
+			MoradorRequestDto requestMorador = null;
+			if (processoDto.getTicketMorador() != null) {
+				requestMorador = MoradorRequestDto.builder()
+					.guide(processoDto.getTicketMorador())
+					.build();				
+			} else {
+				requestMorador = MoradorRequestDto.builder()
 					.cpf(processoDto.getCpfMorador().replace(".", "").replace("-", ""))
 					.build();
+			}
 			
 			moradorResponse = moradorSender.buscarPorFiltros(requestMorador);
 			
