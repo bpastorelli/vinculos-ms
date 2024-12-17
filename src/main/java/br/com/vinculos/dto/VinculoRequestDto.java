@@ -23,6 +23,6 @@ public class VinculoRequestDto {
 	
 	private String complementoResidencia;
 	
-	private Long residenciaId;
+	private String residenciaId;
 
 }

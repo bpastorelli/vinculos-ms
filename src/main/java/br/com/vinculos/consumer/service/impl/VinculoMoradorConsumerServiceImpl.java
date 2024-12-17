@@ -88,16 +88,18 @@ public class VinculoMoradorConsumerServiceImpl implements ConsumerService<Vincul
 					.build();				
 			} else {
 				requestMorador = MoradorRequestDto.builder()
-					.cpf(processoDto.getCpfMorador().replace(".", "").replace("-", ""))
+					.cpf(processoDto.getCpfMorador()
+							.replace(".", "")
+							.replace(".", ""))
 					.build();
 			}
 			
 			moradorResponse = moradorSender.buscarPorFiltros(requestMorador);
 			
 			ResidenciaRequestDto requestResidencia = null;
-			if (processoDto.getResidenciaId() != null || processoDto.getResidenciaId() != 0) {
+			if (processoDto.getResidenciaId() != null) {
 				List<String> ids = new ArrayList<>();
-				ids.add(processoDto.getResidenciaId().toString());
+				ids.add(processoDto.getResidenciaId());
 				requestResidencia = ResidenciaRequestDto.builder()
 						.ids(ids)
 						.build();
