@@ -75,7 +75,6 @@ public class VinculoMoradorConsumerServiceImpl implements ConsumerService<Vincul
 		
 		do {
 			
-			Thread.sleep(500);
 			count ++;
 			log.info("Tentativa {} para registrar vinculo de residencia.", count);
 			
