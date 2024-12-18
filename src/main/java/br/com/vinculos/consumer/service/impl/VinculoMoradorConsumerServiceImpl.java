@@ -88,7 +88,6 @@ public class VinculoMoradorConsumerServiceImpl implements ConsumerService<Vincul
 					.cpf(Utils.tratarCPF(processoDto.getCpfMorador()))
 					.build();
 			}
-			
 			moradorResponse = moradorSender.buscarPorFiltros(requestMorador);
 			
 			ResidenciaRequestDto requestResidencia = null;
@@ -96,24 +95,25 @@ public class VinculoMoradorConsumerServiceImpl implements ConsumerService<Vincul
 				requestResidencia = ResidenciaRequestDto.builder()
 						.id(processoDto.getResidenciaId())
 						.build();
-			}else {
+			} else {
 				requestResidencia = ResidenciaRequestDto.builder()
 						.cep(processoDto.getCepResidencia())
 						.numero(processoDto.getNumeroResidencia())
 						.complemento(processoDto.getComplementoResidencia())
 						.build();
 			}
-			
 			residenciaResponse = residenciaSender.buscarResidenciasPorFiltro(requestResidencia);
 			
-			if((moradorResponse.getMoradores().size() > 0 && residenciaResponse.getResidencias().size() > 0) || count > times) {
+			if ((moradorResponse.getMoradores().size() > 0 && residenciaResponse.getResidencias().size() > 0) || count > times) {
 				retorno = Boolean.TRUE;
+			} else {				
+				Thread.sleep(500);
 			}
 			
 		} while (retorno.equals(Boolean.FALSE));
 		
 		
-		if(moradorResponse.getMoradores().size() > 0 && residenciaResponse.residencias.size() > 0) {
+		if (moradorResponse.getMoradores().size() > 0 && residenciaResponse.residencias.size() > 0) {
 			this.vinculoResidenciaRepository.save(this.convertToVinculoResidencia(moradorResponse, residenciaResponse));
 			return Boolean.TRUE;
 		} else
