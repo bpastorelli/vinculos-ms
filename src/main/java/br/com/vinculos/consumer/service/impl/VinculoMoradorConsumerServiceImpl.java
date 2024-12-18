@@ -1,7 +1,5 @@
 package br.com.vinculos.consumer.service.impl;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +18,7 @@ import br.com.vinculos.entities.VinculoResidencia;
 import br.com.vinculos.repositories.VinculoResidenciaRepository;
 import br.com.vinculos.senders.MoradorSender;
 import br.com.vinculos.senders.ResidenciaSender;
+import br.com.vinculos.utils.Utils;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -76,8 +75,7 @@ public class VinculoMoradorConsumerServiceImpl implements ConsumerService<Vincul
 		
 		do {
 			
-			Thread.sleep(1000);
-			
+			Thread.sleep(500);
 			count ++;
 			log.info("Tentativa {} para registrar vinculo de residencia.", count);
 			
@@ -88,9 +86,7 @@ public class VinculoMoradorConsumerServiceImpl implements ConsumerService<Vincul
 					.build();				
 			} else {
 				requestMorador = MoradorRequestDto.builder()
-					.cpf(processoDto.getCpfMorador()
-							.replace(".", "")
-							.replace(".", ""))
+					.cpf(Utils.tratarCPF(processoDto.getCpfMorador()))
 					.build();
 			}
 			
@@ -98,10 +94,8 @@ public class VinculoMoradorConsumerServiceImpl implements ConsumerService<Vincul
 			
 			ResidenciaRequestDto requestResidencia = null;
 			if (processoDto.getResidenciaId() != null) {
-				List<String> ids = new ArrayList<>();
-				ids.add(processoDto.getResidenciaId());
 				requestResidencia = ResidenciaRequestDto.builder()
-						.ids(ids)
+						.id(processoDto.getResidenciaId())
 						.build();
 			}else {
 				requestResidencia = ResidenciaRequestDto.builder()

@@ -19,6 +19,8 @@ public class ResidenciaRequestDto implements Serializable {
 	
 	public List<String> ids;
 	
+	public String id;
+	
 	public String cep;
 	
 	public Long numero;
