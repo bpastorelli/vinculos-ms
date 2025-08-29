@@ -37,6 +37,8 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
                 .mvcMatchers(HttpMethod.GET, "**/sgc/vinculo/**").permitAll()
                 .mvcMatchers(HttpMethod.POST, "**/sgc/vinculo/**").permitAll()
                 .mvcMatchers(HttpMethod.PUT, "**/sgc/vinculo/**").permitAll()
+                .mvcMatchers(HttpMethod.GET, "**/sgc/morador/**").permitAll()
+                .mvcMatchers(HttpMethod.GET, "**/sgc/residencia/**").permitAll()
                 .antMatchers(HttpMethod.GET, AUTH_WHITELIST).permitAll()
                 .anyRequest()
                 .authenticated())

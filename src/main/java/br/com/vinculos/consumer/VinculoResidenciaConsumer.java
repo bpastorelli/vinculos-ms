@@ -17,7 +17,7 @@ public class VinculoResidenciaConsumer {
 	@Autowired
 	private ConsumerService<VinculoRequestDto> consumerService;
 	
-	@KafkaListener(topics = "${vinculo.topic.name}", groupId = "${spring.kafka.consumer.group-id}")
+	//@KafkaListener(topics = "${vinculo.topic.name}", groupId = "${spring.kafka.consumer.group-id}")
 	public void consumer(@Payload VinculoRequestDto message) {
 		
 		log.info("Recebida a mensagem, enviando para o serviço...");

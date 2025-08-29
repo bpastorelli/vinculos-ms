@@ -9,6 +9,7 @@ import org.springframework.web.client.RestTemplate;
 
 import br.com.vinculos.dto.QueryResidenciaResponseDto;
 import br.com.vinculos.dto.ResidenciaRequestDto;
+import br.com.vinculos.security.service.TokenService;
 import br.com.vinculos.utils.RestTemplateUtil;
 import lombok.extern.slf4j.Slf4j;
 
@@ -22,12 +23,16 @@ public class ResidenciaSender {
 	@Autowired
 	private RestTemplate restTemplate;
 	
+	@Autowired
+	private TokenService tokenService;
+	
 	public QueryResidenciaResponseDto buscarResidencias(ResidenciaRequestDto request) throws IllegalArgumentException, IllegalAccessException, ClassNotFoundException{
 		
 		log.info("Consultando residencias no endpoint: {}", URL);
 		
 		RestTemplateUtil rest = RestTemplateUtil.builder()
 				.URL(URL + "?%s")
+				.jwtToken(tokenService.getCurrentToken())
 				.mediaType(MediaType.APPLICATION_JSON)
 				.method(HttpMethod.GET)
 				.restTemplate(restTemplate)

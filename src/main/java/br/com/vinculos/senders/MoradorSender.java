@@ -9,6 +9,7 @@ import org.springframework.web.client.RestTemplate;
 
 import br.com.vinculos.dto.GETMoradoresSemResidenciaResponseDto;
 import br.com.vinculos.dto.MoradorRequestDto;
+import br.com.vinculos.security.service.TokenService;
 import br.com.vinculos.utils.RestTemplateUtil;
 import lombok.extern.slf4j.Slf4j;
 
@@ -22,12 +23,16 @@ public class MoradorSender {
 	@Autowired
 	private RestTemplate restTemplate;
 	
+	@Autowired
+	private TokenService tokenService;
+	
 	public GETMoradoresSemResidenciaResponseDto buscarPorFiltros(MoradorRequestDto request) throws IllegalArgumentException, IllegalAccessException, ClassNotFoundException{
 		
 		log.info("Consultando moradores no endpoint: {}", URL);
 		
 		RestTemplateUtil rest = RestTemplateUtil.builder()
 				.URL(URL + "/query?%s")
+				.jwtToken(tokenService.getCurrentToken())
 				.mediaType(MediaType.APPLICATION_JSON)
 				.method(HttpMethod.GET)
 				.restTemplate(restTemplate)
@@ -44,6 +49,7 @@ public class MoradorSender {
 		
 		RestTemplateUtil rest = RestTemplateUtil.builder()
 				.URL(URL + "/buscar?%s")
+				.jwtToken(tokenService.getCurrentToken())
 				.mediaType(MediaType.APPLICATION_JSON)
 				.method(HttpMethod.GET)
 				.restTemplate(restTemplate)
