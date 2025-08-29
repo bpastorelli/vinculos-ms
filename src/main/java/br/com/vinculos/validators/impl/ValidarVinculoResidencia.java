@@ -18,10 +18,10 @@ import br.com.vinculos.errorheadling.RegistroException;
 import br.com.vinculos.repositories.VinculoResidenciaRepository;
 import br.com.vinculos.senders.MoradorSender;
 import br.com.vinculos.senders.ResidenciaSender;
-import br.com.vinculos.validators.Validators;
+import br.com.vinculos.validators.ValidatorsVinculos;
 
 @Component
-public class ValidarVinculoResidencia implements Validators<VinculoResidenciaRequestDto, AtualizaVinculoResidenciaDto, List<VinculoResidencia>>{
+public class ValidarVinculoResidencia implements ValidatorsVinculos<VinculoResidenciaRequestDto, AtualizaVinculoResidenciaDto, List<VinculoResidencia>>{
 	
 	@Autowired
 	private VinculoResidenciaRepository vinculoRepository;

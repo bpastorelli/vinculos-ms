@@ -4,15 +4,13 @@ import java.util.List;
 
 import br.com.vinculos.errorheadling.RegistroException;
 
-public interface Validators<T, X, V> {
+public interface Validators<T, X> {
 	
-	void validarPost(T dto) throws RegistroException, IllegalArgumentException, IllegalAccessException, ClassNotFoundException;
+	void validarPost(T dto) throws RegistroException;
 	
 	void validarPost(List<T> listDto) throws RegistroException;
 	
-	void validarPut(X dto, Long id) throws RegistroException;
+	void validarPut(X dto) throws RegistroException;
 	
 	void validarPut(List<X> listDto) throws RegistroException;
-	
-	V validarGet(T dto) throws RegistroException, IllegalArgumentException, IllegalAccessException, ClassNotFoundException;
 }

@@ -25,7 +25,7 @@ import br.com.vinculos.repositories.VinculoResidenciaRepository;
 import br.com.vinculos.response.Response;
 import br.com.vinculos.senders.MoradorSender;
 import br.com.vinculos.senders.ResidenciaSender;
-import br.com.vinculos.validators.Validators;
+import br.com.vinculos.validators.ValidatorsVinculos;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -45,7 +45,7 @@ public class VinculosService {
 	private VinculoResidenciaRepository vinculoResidenciaRepository;
 	
 	@Autowired
-	private Validators<VinculoResidenciaRequestDto, AtualizaVinculoResidenciaDto, List<VinculoResidencia>> validator;
+	private ValidatorsVinculos<VinculoResidenciaRequestDto, AtualizaVinculoResidenciaDto, List<VinculoResidencia>> validator;
 	
 	public ResponsePublisherDto salvar(VinculoResidenciaRequestDto vinculoRequestBody) throws RegistroException, IllegalArgumentException, IllegalAccessException, ClassNotFoundException {
 		

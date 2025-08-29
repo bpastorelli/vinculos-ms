@@ -1,57 +1,47 @@
-package br.com.vinculos.config;
+package br.com.vinculos.security.config;
 
 import java.util.List;
 
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-@Configuration
 @EnableWebSecurity
 public class WebSecurity extends WebSecurityConfigurerAdapter {
+	
+	private UserDetailsService appUserDetailsService;
+    
+	private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
-        return configuration.getAuthenticationManager();
-    }
-            
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+    public WebSecurity(UserDetailsService appUserDetailsService, BCryptPasswordEncoder bCryptPasswordEncoder) {
+        this.appUserDetailsService = appUserDetailsService;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-        		.mvcMatchers(HttpMethod.POST, "/sgc/vinculo/**").permitAll()
-        		.mvcMatchers(HttpMethod.PUT, "/sgc/vinculo/**").permitAll()
-        		.mvcMatchers(HttpMethod.GET, "/sgc/vinculo/**").permitAll()
-        		.antMatchers(HttpMethod.GET, AUTH_WHITELIST).permitAll()
+        http.authorizeRequests(requests -> requests
+                //.mvcMatchers(HttpMethod.GET, "https://j77akndu44.execute-api.sa-east-1.amazonaws.com/prod/**").permitAll()
+                .mvcMatchers(HttpMethod.GET, "**/sgc/vinculo/**").permitAll()
+                .mvcMatchers(HttpMethod.POST, "**/sgc/vinculo/**").permitAll()
+                .mvcMatchers(HttpMethod.PUT, "**/sgc/vinculo/**").permitAll()
+                .antMatchers(HttpMethod.GET, AUTH_WHITELIST).permitAll()
                 .anyRequest()
-                .authenticated()
-                .and()
-                .cors()
-                .configurationSource(corsConfigurationSource())
-                .and()
-                //.oauth2ResourceServer()
-                //.jwt();
-                //.addFilter(new JWTAuthenticationFilter(authenticationManager(), moradorRepository))
-                //.addFilter(new JWTAuthorizationFilter(authenticationManager()))
-                //.addFilter(new AuthenticationService(authenticationManager(), moradorRepository))
-                // this disables session creation on Spring Security
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        http.csrf().disable();
+                .authenticated())
+                .cors(cors -> cors
+                        .configurationSource(corsConfigurationSource()))
+                .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+        http.csrf(csrf -> csrf.disable());
     }
     
     private static final String[] AUTH_WHITELIST = {
@@ -83,6 +73,17 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration.applyPermitDefaultValues());
         return source;
+    }
+
+    @Override
+    public void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(appUserDetailsService).passwordEncoder(bCryptPasswordEncoder);
+    }
+    
+    @Override
+    @Bean
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
     }
   
 }
